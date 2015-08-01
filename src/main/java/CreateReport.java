@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.FileUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -28,13 +29,18 @@ public class CreateReport {
     public static final String SERVER_PATH = "/WWH-results/app";
 
 
-    private void drawOutput(String csvsPath) throws FileNotFoundException {
+    private void drawOutput(String csvsPath) throws IOException {
+        ArrayList<String> DeleteOldClusterFolders = new ArrayList<String>();
         File[] sourceFolderList = new File(csvsPath).listFiles();
         for (File dbDir : sourceFolderList) {
             if (dbDir.isDirectory()){
                 String Dbname = dbDir.getName();
                 System.out.println("Working on cluster " + Dbname );
                 String outDbPath = SERVER_PATH +"/" + Dbname;
+                File d = new File(outDbPath);
+                if(d.exists()){
+                    FileUtils.deleteDirectory(d);
+                }
                 new File(outDbPath).mkdirs();
                 File[] csvFiles = dbDir.listFiles();
                 for (File csvFile : csvFiles) {

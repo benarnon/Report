@@ -1,4 +1,8 @@
+import org.apache.commons.io.FileUtils;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -12,6 +16,7 @@ public class HistogramParser {
             BufferedReader br = new BufferedReader(reader);
             String line;
             File file;
+            ArrayList<String> DeleteOldClusterFolders = new ArrayList<String>();
             // garbage, only for the start
             FileWriter output = null;
             // end of garbage
@@ -48,6 +53,11 @@ public class HistogramParser {
                     File theDir = new File(outputPath +"/" +clusterID);
 
                     // if the directory does not exist, create it
+                    if(theDir.exists() && DeleteOldClusterFolders.contains(clusterID)){
+                        FileUtils.deleteDirectory(theDir);
+                        DeleteOldClusterFolders.add(clusterID);
+
+                    }
                     if (!theDir.exists()) {
                         System.out.println("creating directory: " + outputPath +"/" +clusterID);
                         boolean result = false;
@@ -63,6 +73,7 @@ public class HistogramParser {
                             System.out.println("DIR created");
                         }
                     }
+
 
                     file = new File(outputPath +"/" +clusterID,  currGeneName + ".csv");
                     file.createNewFile();
